@@ -1,0 +1,177 @@
+<html>
+    <head>
+        <title>
+            JanakiRam
+        </title>
+        <link
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+			rel="stylesheet"
+			
+			integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+			crossorigin="anonymous"
+        />
+        <script
+			defer
+			src="https://use.fontawesome.com/releases/v5.7.2/js/all.js"
+			integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP"
+			crossorigin="anonymous"
+		></script>
+        
+
+    </head>
+    <body id=body class=site-header>
+        <nav class="navbar navbar-dark bg-dark">
+            <span class="navbar-brand mb-0 h1">Xpers</span>
+            <span class="navbar-brand mb-0 h1"  id="headingTotal">Xpers</span>
+        </nav>
+        <div class="container-fluid bg-light" style="min-height: 100vh">
+                <h1 id="headingTotal"> </h1>
+            <div class="container">
+                <div class="jumbotron mt-4">
+                        <div class="input-group mb-3">
+                                <input id="inputAmount" 
+                                type="text"
+                                class="form-control"
+                                placeholder="Amount spent"
+                                aria-label="Amount spent"
+                                aria-describedby="spent in rupee" />
+                        </div>
+                        <div class="input-group-append">
+                                <span class="input-group-text" id="spent in rupee">₹</span>
+                        </div>
+
+                        <div class="input-group mb-3">
+
+                                <div class="input-group-prepend">
+                                        <span class="input-group-text" id="spent at">@</span>
+                                </div>
+                                <input id="inputdesc" type="text"
+                                class="form-control"
+                                placeholder="spent On"
+                                aria-label="spent On"
+                                aria-describedby="spent at"/>
+
+                                <div class="input-group-append">
+                                        <button class="btn btn-outline-primary" type="button" id="btnAddexpense">Add</button>
+                                </div>
+                        </div>
+            
+                    
+                    
+                    
+                    <div id="expensetable"> </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            let TotalExpense=0;
+            const headingelement= document.querySelector("#headingTotal")
+            const inputDescEl= document.querySelector("#inputdesc") 
+            const inputElement=document.querySelector("#inputAmount")
+            const expensetableel=document.querySelector("#expensetable")
+            var allexpenses=[]
+            
+            
+
+
+            headingelement.textContent=TotalExpense
+            function addExpenseToTotal()
+            {
+                
+                var expense={}
+                inputAmount= inputElement.value
+
+                inputdesc= inputDescEl.value
+                expense.description=inputdesc
+                expense.amount=inputAmount
+                expense.moment=new Date();
+                
+                //console.log(expense)
+                allexpenses.push(expense)
+                /* console.table(allexpenses)
+                console.log({inputAmount,inputdesc}) */
+
+                expense=parseInt(inputAmount,10)
+
+                TotalExpense=TotalExpense+expense
+                //console.log(TotalExpense)
+                const totaltext= `Total : ${TotalExpense}`
+                headingelement.textContent=totaltext
+
+                const expensetabletext=allexpenses.map( expense=> createlistitem(expense))
+
+                expensetableel.innerHTML=expensetabletext;
+
+                 inputDescEl.value=""
+                inputElement.value="" 
+            }
+
+            function createlistitem({description,amount,moment})
+            {
+                return `
+                <div>
+					<ul class="list-group">
+						<li class="list-group-item d-flex justify-content-between">
+							<div class="d-flex flex-column">
+								${description}
+								<small class="text-muted">${gettodaydate()}</small>
+							</div>
+							<div>
+								<span class="px-5">
+									${amount}
+								</span>
+								<button type="button" class="btn btn-outline-danger btn-sm"
+                                   onclick="deleteitem(${moment.valueOf()},${amount})">
+									<i class="fas fa-trash-alt"></i>
+								</button>
+							</div>
+						</li>`
+            }
+            function gettodaydate()
+            {
+                var moment=new Date()
+                var options={year:'numeric',month:'long',day:'numeric'}
+               return moment.toLocaleDateString('en-us',options)
+            }
+            function deleteitem( deletedate,amounttobedeleted)
+            {
+                var newarr=[]
+                
+                for (let i=0;i<allexpenses.length;i++)
+                {
+                    //console.log(allexpenses[i].moment.valueOf())
+                    if(allexpenses[i].moment.valueOf()!==deletedate)
+                    {
+                        //console.log("item found");
+                        newarr.push(allexpenses[i])
+                        
+                       // console.log("item deleted",allexpenses[i].moment.valueOf())
+                    }
+                    
+                    else
+                    {
+                        console.log(allexpenses[i].amount)
+                        
+                        TotalExpense=TotalExpense-amounttobedeleted
+                        headingelement.textContent=TotalExpense
+                    }
+                
+                }
+                allexpenses=newarr
+                const expensetabletext=allexpenses.map( expense=> createlistitem(expense))
+
+                expensetableel.innerHTML=expensetabletext;
+               
+
+            }
+            
+          var element=document.querySelector("#btnAddexpense");
+          //console.log(element);
+          element.addEventListener("click",addExpenseToTotal,false);
+          
+        </script>
+        <h1 class="intro"> </h1>
+
+        
+    </body>
+</html>
